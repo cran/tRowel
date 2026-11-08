@@ -1,0 +1,19 @@
+#' Converts a Munsell specification to CIE Lab coordinates for clustering
+#' @param dirtData A dataframe with a column that has Munsell colors (i.e., 10YR 2/1) 
+#' @param munsellCol The column name with Munsell colors (must be a character and properly formatted (i.e., 10YR 2/1 NOT 10YR2/1)
+#' @param whiteVal XYZ for the source white - a numeric 3-vector with scaling irrelevant. white can also be a numeric 2-vector; which is interpreted as xy chromaticity and converted to XYZ with Y=100. white can also be the name of any standard illuminant recognized by spacesXYZ::standardXYZ() which is scaled so that Y=100. The default 'D65' is converted to c(95.047,100,108.883). see MunsellToLab::munsellinterpol.
+#' @return This function will return the original dataframe with new L, a, b columns
+#' @examples 
+#' data(testPit)
+#' MunsellClusterData <- munsling(dirtData = testPit, munsellCol = "Munsell")
+#' @details This function saves the columns to your original dataframe stored in R. Your new df will look the exact same with three new columns (L, a, b). L, a, and b represent the values for CIE colors with L for perceptual lightness and a and b for the four unique colors of human vision.
+#' @author Gwen Olivier, Samuel R. Borstein
+#' @export
+#check Munsell white param in munsellinterpol 
+
+munsling <- function(dirtData, munsellCol, whiteVal='D65'){
+  LAB <- munsellinterpol::MunsellToLab(dirtData[[munsellCol]],white=whiteVal)
+  df_LAB <- cbind(dirtData, LAB)
+
+  return(df_LAB)
+} 
